@@ -1,0 +1,61 @@
+<div *ngIf="product != null" class="product-item">
+  <img class="product-item__image" src="{{product.productImagePath}}">
+  <a class="btn btn-view-prod" [routerLink]="['/product', product.productFriendlyEndpoint]">Product Details</a>
+</div>
+
+<div *ngIf="productFriendlyEndpoint != null" class="product-item-detailed-container">
+  <div class="product-item-detailed__image">
+    <img class="self-center" src="{{productImagePath}}">
+    <br>
+    <span class="product-item__calification-average">Average rating of {{calificationAverage.toFixed(1)}}/5 ({{califications.length}})</span>
+  </div>    
+  <div class="product-item-detailed-wrapper">
+    <div class="product-item-detailed__description">
+      <h2>{{productTitle}}</h2>
+      <p>{{productDescription}}</p>
+    </div>
+    <div class="product-item__calification-form">
+        <h2>Add a new calification</h2>
+          <form class="calification" #calification>
+            <input type="hidden" name="product_id" value="{{this.productId}}" #product_id>
+            <div class="calification-form__row">
+                <label>Rate: </label>
+                <div class="stars">
+                  <i *ngFor="let star of [1,2,3,4,5]" id="star_{{star}}" [ngStyle]="{'color':(calificationHover >= star) ? 'rgba(214, 201, 16, 0.719)' : black}" (mouseenter)="starsEnter(star)" (mouseleave)="starsLeave()" (click)="starsSelect(star)" class="fas fa-star"></i>
+                </div>
+            </div>
+            <div class="calification-form__row">
+              <label for="cal_author">Author:</label>
+              <input type="text" id="cal_author" #cal_author autocomplete="off">
+            </div>
+            <div class="calification-form__row">
+              <label for="cal_review">Review:</label>
+              <textarea id="cal_review" #cal_review></textarea>
+            </div>
+            <button class="btn btn-add-cal self-center" (click)="insertCalification(product_id, cal_author, cal_review)">Add calification</button> 
+          </form>    
+    </div>
+   
+  </div>  
+  
+</div>
+
+<div *ngIf="califications.length != 0" class="calification-list">
+    <h2 class="text-center">Reviews for this product</h2>
+    <div class="calification-list-wrapper">
+      <div *ngFor="let calification of califications" class="calification-list-item">
+        <span class="calification-list-item__info">On {{calification.calificationDate}}, {{calification.calificationAuthor}} wrote:</span> 
+        <div class="calification-list-item__calification-text">
+          <span class="fas fa-quote-left"></span>
+            {{calification.calificationReview}}
+          <span class="fas fa-quote-right"></span>
+          <br>
+          <div class="calification-list-item__calification-rate">
+              <span class="fas fa-star" *ngFor='let in of counter(calification.calificationRate) ;let i = index'></span>
+          </div>
+          
+          
+        </div><button class="btn btn-rem-cal" (click)=removeCalification(calification.calificationId)>Remove</button>
+      </div>
+    </div>
+</div>
